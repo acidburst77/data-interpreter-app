@@ -9,6 +9,3 @@
 * Tomcat
 * PostgresSQL 10
 * html / css
-
-
-
