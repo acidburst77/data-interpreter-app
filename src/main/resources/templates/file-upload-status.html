@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Вывод данных из файла</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <h1>Вывод данных из файла</h1>
+            <table>
+                <thead>
+                    <th>ИД польз.</th>
+                    <th>Время</th>
+                    <th>Группа события</th>
+                    <th>Тип обытия</th>
+                    <th>Подтип события</th>
+                    <th>Адрес события</th>
+                    <th>Орагнизация</th>
+                    <th>ИД формы</th>
+                    <th>Ключ сессии</th>
+                    <th>Ответ от сервиса<br> авторизации</th>
+                    <th>Дата</th>
+                </thead>
+                <tbody>
+                    <tr th:each="log: ${logs}">
+                        <td th:text="${log.ssoid}"></td>
+                        <td th:text="${log.ts}"></td>
+                        <td th:text="${log.grp}"></td>
+                        <td th:text="${log.type}"></td>
+                        <td th:text="${log.subType}"></td>
+                        <td th:text="${log.url}"></td>
+                        <td th:text="${log.orgId}"></td>
+                        <td th:text="${log.formId}"></td>
+                        <td th:text="${log.code}"></td>
+                        <td th:text="${log.ltpa}"></td>
+                        <td th:text="${log.sudirresponse}"></td>
+                        <td th:text="${log.ymdh}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
