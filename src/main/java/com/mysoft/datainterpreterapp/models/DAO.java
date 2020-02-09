@@ -2,16 +2,28 @@ package com.mysoft.datainterpreterapp.models;
 
 import javax.swing.plaf.nimbus.State;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DAO {
+    /**
+     * Создание соединения с PostgreSQL
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static Connection getConnection() throws ClassNotFoundException, SQLException {
         Class.forName("org.postgresql.Driver");
         return DriverManager.getConnection("jdbc:postgresql://localhost:5432/test", "postgres", "root12345");
     }
 
+    /**
+     * Удаление таблицы с логами
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public static void deleteLogsTable() throws SQLException, ClassNotFoundException {
-        String sqlLine = "drop table if exists logs";
+        String sqlLine = "DROP TABLE IF EXISTS logs";
 
         try (Connection c = getConnection();
             Statement statement = c.createStatement();
@@ -23,8 +35,13 @@ public class DAO {
         }
     }
 
+    /**
+     * Создание таблицы с логами
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public static void createLogsTable() throws SQLException, ClassNotFoundException {
-        String sqlLine = "create table if not exists logs (ssoid varchar (255), ts integer, grp varchar (100), type varchar (50)," +
+        String sqlLine = "CREATE TABLE IF NOT EXISTS logs (ssoid varchar (255), ts integer, grp varchar (100), type varchar (50)," +
                 "subtype varchar (50), url varchar (50), orgId varchar (120), formId varchar (150), " +
                 "code varchar (100), ltpa varchar (255), sudirresponse varchar(50), ymdh date)";
 
@@ -38,8 +55,14 @@ public class DAO {
         }
     }
 
+    /**
+     * Заполнение таблицы с логами из csv-файла
+     * @param line
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public static void updateLogsTable(String line) throws SQLException, ClassNotFoundException {
-        String sqlLine = "insert into logs values (" + line + ")";
+        String sqlLine = "INSERT INTO logs VALUES (" + line + ")";
 
         try (Connection c = getConnection();
              Statement statement = c.createStatement();
@@ -50,4 +73,73 @@ public class DAO {
             e.printStackTrace();
         }
     }
+
+    public static List<Logs> getLogssForLastHour() throws SQLException, ClassNotFoundException {
+        ArrayList<Logs> logs = new ArrayList<Logs>();
+        String sqlLine = "SELECT ssoid, formId, to_timestamp(ts) " +
+                "FROM public.logs where to_timestamp(ts) >= (now() - interval '1 hour' )" +
+                "order by to_timestamp(ts) asc";
+
+        try (Connection c = getConnection();
+             Statement statement = c.createStatement();
+             ResultSet resultSet = statement.executeQuery(sqlLine)) {
+            while (resultSet.next()) {
+                String ssoid = resultSet.getString(1);
+                String formId = resultSet.getString(2);
+                Long ts = resultSet.getLong(3);
+                logs.add(new Logs(ssoid, formId, ts));
+            }
+        } catch (SQLException e) {
+            System.out.println("При взятии логов за последний час было прервано соединение с базой данных.");
+            e.printStackTrace();
+        }
+
+        return logs;
+    }
+
+    public static List<Logs> getLogsForTopFiveForms() throws SQLException, ClassNotFoundException {
+        ArrayList<Logs> logs = new ArrayList<Logs>();
+        String sqlLine = "SELECT formId, count(*) as countVisits FROM logs WHERE formId != '' GROUP BY formId ORDER BY countVisits DESC LIMIT 5";
+
+        try (Connection c = getConnection();
+             Statement statement = c.createStatement();
+             ResultSet resultSet = statement.executeQuery(sqlLine)) {
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(2));
+
+                String formId = resultSet.getString(1);
+                Integer countVisits = resultSet.getInt(2);
+
+                logs.add(new Logs(formId, countVisits));
+            }
+        } catch (SQLException e) {
+            System.out.println("В момент взятия логов по топ-5 формам было прервано соединение с базой данных.");
+            e.printStackTrace();
+        }
+
+        return logs;
+    }
+
+    /*public static List<Logs> getLogsForActiveUsers() throws SQLException, ClassNotFoundException {
+        ArrayList<Logs> logs = new ArrayList<Logs>();
+        String sqlLine = "SELECT ssoid, formId, to_timestamp(ts) " +
+                "FROM public.logs where to_timestamp(ts) >= (now() - interval '1 hour' )" +
+                "order by to_timestamp(ts) asc";
+
+        try (Connection c = getConnection();
+             Statement statement = c.createStatement();
+             ResultSet resultSet = statement.executeQuery(sqlLine)) {
+            while (resultSet.next()) {
+                String ssoid = resultSet.getString(1);
+                String formId = resultSet.getString(2);
+                Long ts = resultSet.getLong(3);
+                logs.add(new Logs(ssoid, formId, ts));
+            }
+        } catch (SQLException e) {
+            System.out.println("При взятии логов было прервано соединение с базой данных.");
+            e.printStackTrace();
+        }
+
+        return logs;
+    }*/
 }

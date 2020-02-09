@@ -4,7 +4,6 @@ import com.mysoft.datainterpreterapp.models.DAO;
 import com.mysoft.datainterpreterapp.models.Logs;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.sun.org.apache.xml.internal.security.keys.content.MgmtData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,6 @@ import java.io.Reader;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class UploadController {
         return "index";
     }
 
-    @PostMapping("/upload-csv-file")
+    @PostMapping("/upload")
     public String uploadCSVFile(@RequestParam("file") MultipartFile file, Model model) {
         // валидируем файл
         if(file.isEmpty()) {
@@ -67,6 +65,7 @@ public class UploadController {
                 }
 
                 model.addAttribute("logs", logs);
+                model.addAttribute("message", "Данные были успешно импортированы");
                 model.addAttribute("status", true);
             } catch (IOException e) {
                 model.addAttribute("message", "Произошла ошибка при обработке файла");
@@ -81,6 +80,6 @@ public class UploadController {
             }
         }
 
-        return "index";
+        return "upload";
     }
 }

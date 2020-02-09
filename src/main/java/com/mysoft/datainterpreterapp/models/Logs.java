@@ -28,6 +28,8 @@ public class Logs {
     @CsvBindByName
     private String ymdh;
 
+    private Integer countVisits;
+
     public Logs() {}
 
     public Logs(String ssoid, Long ts, String grp, String type, String subType, String url, String orgId, String formId, String code, String ltpa, String sudirresponse, String ymdh) {
@@ -43,6 +45,21 @@ public class Logs {
         this.ltpa = ltpa;
         this.sudirresponse = sudirresponse;
         this.ymdh = ymdh;
+    }
+
+    public Logs(String ssoid, String formId, Long ts) {
+        this.ssoid = ssoid;
+        this.formId = formId;
+        this.ts = ts;
+    }
+
+    public Logs(String formId, Integer countVisits) {
+        this.formId = formId;
+        this.countVisits = countVisits;
+    }
+
+    public Integer getCountVisits() {
+        return countVisits;
     }
 
     public String getSsoid() {
