@@ -74,6 +74,12 @@ public class DAO {
         }
     }
 
+    /**
+     * Логи за последний час
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public static List<Logs> getLogssForLastHour() throws SQLException, ClassNotFoundException {
         ArrayList<Logs> logs = new ArrayList<Logs>();
         String sqlLine = "SELECT ssoid, formId, to_timestamp(ts) " +
@@ -97,6 +103,12 @@ public class DAO {
         return logs;
     }
 
+    /**
+     * Логи по топ-5 используемым формам
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public static List<Logs> getLogsForTopFiveForms() throws SQLException, ClassNotFoundException {
         ArrayList<Logs> logs = new ArrayList<Logs>();
         String sqlLine = "SELECT formId, count(*) as countVisits FROM logs WHERE formId != '' GROUP BY formId ORDER BY countVisits DESC LIMIT 5";
@@ -120,20 +132,29 @@ public class DAO {
         return logs;
     }
 
-    /*public static List<Logs> getLogsForActiveUsers() throws SQLException, ClassNotFoundException {
+    /**
+     * Логи по активности пользователей (на каком щаге остановились)
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
+    public static List<Logs> getLogsForActiveUsers() throws SQLException, ClassNotFoundException {
         ArrayList<Logs> logs = new ArrayList<Logs>();
-        String sqlLine = "SELECT ssoid, formId, to_timestamp(ts) " +
-                "FROM public.logs where to_timestamp(ts) >= (now() - interval '1 hour' )" +
-                "order by to_timestamp(ts) asc";
+        String sqlLine = "select l1.ssoid, l1.grp,  l1.subtype, max(to_timestamp(l1.ts)) as maxTs\n" +
+                "from logs as l1\n" +
+                "where l1.grp like '%dszn_%' \n" +
+                "and not exists (select subtype from logs where ssoid = l1.ssoid and subtype = 'send')\n" +
+                "group by l1.ssoid, l1.subtype, l1.grp";
 
         try (Connection c = getConnection();
              Statement statement = c.createStatement();
              ResultSet resultSet = statement.executeQuery(sqlLine)) {
             while (resultSet.next()) {
                 String ssoid = resultSet.getString(1);
-                String formId = resultSet.getString(2);
-                Long ts = resultSet.getLong(3);
-                logs.add(new Logs(ssoid, formId, ts));
+                String grp = resultSet.getString(2);
+                String subType = resultSet.getString(3);
+                String maxTs = resultSet.getString(4);
+                logs.add(new Logs(ssoid, grp, subType, maxTs));
             }
         } catch (SQLException e) {
             System.out.println("При взятии логов было прервано соединение с базой данных.");
@@ -141,5 +162,5 @@ public class DAO {
         }
 
         return logs;
-    }*/
+    }
 }

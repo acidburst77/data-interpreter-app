@@ -29,6 +29,7 @@ public class Logs {
     private String ymdh;
 
     private Integer countVisits;
+    private String maxTs;
 
     public Logs() {}
 
@@ -56,6 +57,17 @@ public class Logs {
     public Logs(String formId, Integer countVisits) {
         this.formId = formId;
         this.countVisits = countVisits;
+    }
+
+    public Logs(String ssoid, String grp, String subtype, String maxTs) {
+        this.ssoid = ssoid;
+        this.grp = grp;
+        this.subType = subtype;
+        this.maxTs = maxTs;
+    }
+
+    public String getMaxTs() {
+        return maxTs;
     }
 
     public Integer getCountVisits() {

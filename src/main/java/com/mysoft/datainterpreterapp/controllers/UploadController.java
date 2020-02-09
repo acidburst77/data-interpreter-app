@@ -23,12 +23,8 @@ import java.util.List;
 
 @Controller
 public class UploadController {
-    @GetMapping("/")
-    public java.lang.String index() {
-        return "index";
-    }
 
-    @PostMapping("/upload")
+    @PostMapping("/upload-csv-file")
     public String uploadCSVFile(@RequestParam("file") MultipartFile file, Model model) {
         // валидируем файл
         if(file.isEmpty()) {
@@ -80,6 +76,6 @@ public class UploadController {
             }
         }
 
-        return "upload";
+        return "index";
     }
 }

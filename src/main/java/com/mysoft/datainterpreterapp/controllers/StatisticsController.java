@@ -11,6 +11,15 @@ import java.util.List;
 
 @Controller
 public class StatisticsController {
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+
+    @GetMapping("/upload")
+    public String upload() {
+        return "upload";
+    }
 
     @GetMapping("/last-hour")
     public String lastHourLogs(Model model) throws SQLException, ClassNotFoundException {
@@ -20,13 +29,13 @@ public class StatisticsController {
         return "last-hour";
     }
 
-    /*@GetMapping("/active-users")
+    @GetMapping("/active-users")
     public String activeUsersLogs(Model model) throws SQLException, ClassNotFoundException {
-        List<Logs> logs = DAO.getLogssForLastHour();
+        List<Logs> logs = DAO.getLogsForActiveUsers();
         model.addAttribute("logs", logs);
 
         return "active-users";
-    }*/
+    }
 
     @GetMapping("/top-five-forms")
     public String topFiveFormsLogs(Model model) throws SQLException, ClassNotFoundException {

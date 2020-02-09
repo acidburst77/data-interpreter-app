@@ -15,24 +15,24 @@
 <body>
 
 <div class="container">
-    <h1>Импорт данных</h1>
-    <p>Иморт данных в таблицу "Logs". Если таблица заполнена данными, <br>то она сначала очищается и заполняется заново.</p>
-
-    <div class="alert alert-danger" role="alert" th:if="${!status}">
-        <span th:text="${message}"></span>
-    </div>
-
-    <div class="alert alert-success" role="alert" th:if="${status}">
-        <span th:text="${message}"></span>
-    </div>
-
-    <form method="POST" th:action="@{/upload-csv-file}" enctype="multipart/form-data">
-        <div class="form-group mt-3">
-            <label for="file">Выберите csv-файл</label>
-            <input type="file" name="file" class="form-control-file" id="file" accept=".csv">
+    <main role="main" class="flex-shrink-0">
+        <div class="container">
+            <a href="/">На главную</a>
         </div>
-        <button type="submit" class="btn btn-primary">Заполнить таблицу "Logs"</button>
-    </form>
+
+        <div class="container">
+            <h1 class="mt-5">Импорт данных</h1>
+            <p class="lead">Иморт данных в таблицу "Logs". Если таблица заполнена данными, <br>
+                то она сначала очищается и заполняется заново.</p>
+            <form method="POST" th:action="@{/upload-csv-file}" enctype="multipart/form-data">
+                <div class="form-group mt-3">
+                    <label for="file">Выберите csv-файл</label>
+                    <input type="file" name="file" class="form-control-file" id="file" accept=".csv">
+                </div>
+                <button type="submit" class="btn btn-primary">Заполнить таблицу "Logs"</button>
+            </form>
+        </div>
+    </main>
 </div>
 </body>
 </html>
